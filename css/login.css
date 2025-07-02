@@ -1,0 +1,176 @@
+body {
+    background-image: url('../icons/fundologin.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    
+
+    .entrada {
+        position: relative;
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(8px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 32px;
+        width: 20rem;
+        height: 30rem;
+        border-radius: 10px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        margin: 10px;
+        overflow: hidden;
+    }
+
+    .entrada:hover {
+        animation: animar 1s linear infinite;
+    }
+
+    @keyframes animar {
+        100% {
+            filter: hue-rotate(360deg);
+        }
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .formulario {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        transition: 1s ease-in-out;
+    }
+
+    .entrada-ativo .formulario-login {
+        transform: translateY(-100%);
+    }
+
+    .entrada-ativo .formulario-login {
+        position: absolute;
+        top: 450px;
+        left: 0;
+    }
+
+
+    h2 {
+        font-size: 30px;
+        color: #5a0c03;
+        text-align: center;
+    }
+    
+    .inputs {
+        position: relative;
+        margin: 30px 0;
+        border-bottom: 2px solid #5a0c03;
+    }
+
+    input::placeholder {
+        color: #d14b3b;
+        font-size: 14px;
+        font-style: italic;
+        opacity: 1;
+      }
+
+    .inputs label {
+        position: absolute;
+        top: -20px;
+        left: 5px;
+        font-size: 20px;
+        color: #5a0c03;
+        pointer-events: none;
+        transition: none;
+        font-weight: 500;
+    }
+    
+    .inputs input {
+        width: 320px;
+        height: 40px;
+        font-size: 14px;
+        color: #5a0c03;
+        padding: 0 5px;
+        background: transparent;
+        border: none;
+        outline: none;
+    }
+
+    .inputs input:focus + label,
+    .inputs input:not(:placeholder-shown) + label {
+        top: -20px;
+    }
+
+    .lembrar {
+        margin: -15px 0 15px 5px;
+    }
+    
+    .lembrar label {
+        font-size: 1em;
+        color: #5a0c03;
+    }
+     
+    .lembrar label input {
+        accent-color: #5a0c03;
+    }
+
+    button {
+        position: relative;
+        width: 100%;
+        height: 40px;
+        background: #5a0c03;
+        box-shadow: 0 0 10px #5a0c03;
+        font-size: 16px;
+        color: #000;
+        font-weight: 500;
+        cursor: pointer;
+        border-radius: 30px;
+        border: none;
+        outline: none;
+    }
+
+    button:hover {
+        background: #d14b3b
+    }
+
+    a {
+        color: #5a0c03;
+    }
+
+    button#entrar {
+        margin-top: 25px;
+        margin-bottom: 10px;
+    }
+
+}
+
+#logo-infinity {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    justify-content: center;
+    font-size: 25px;
+    flex-direction: row;
+    color: #d4cac9;
+    margin-bottom: 30px;
+}
+
+#logo-box {
+    background-color: #d14b3b;
+    padding: 2px;
+}
+

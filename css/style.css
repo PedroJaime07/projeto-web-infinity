@@ -99,6 +99,10 @@
 
 #body {
   display: flex;
+  height: 100vh; /* Ocupa toda a altura da tela */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 
   #sidebar {
     background-color: #3a3a3a;
@@ -111,6 +115,10 @@
     font-size: larger;
     list-style: none;
     position: relative;
+
+    nav {
+      height: 100vh;
+    }
 
     a {
       text-decoration: none;
@@ -130,6 +138,7 @@
         transform: translate3d();
         transition: .4s;
         height: 0px;
+        flex-wrap: wrap;
     }
     
     #descricao.open{
@@ -176,6 +185,15 @@
         width: 16px;
     }
   }
+}
+
+main {
+    flex: 1;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 

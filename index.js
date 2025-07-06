@@ -49,11 +49,7 @@ const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 
 // Verificar se as credenciais estão em variáveis de ambiente ou arquivo
 function getCredentialsPath() {
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    // Usar variáveis de ambiente
-    return null;
-  }
-  // Usar arquivo credentials.json
+  // Sempre usar arquivo credentials.json por enquanto
   return path.join(process.cwd(), 'credentials.json');
 }
 
@@ -71,25 +67,15 @@ async function loadSavedCredentialsIfExist() {
 }
 
 async function saveCredentials(client) {
-  let client_id, client_secret;
-  
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    // Usar variáveis de ambiente
-    client_id = process.env.GOOGLE_CLIENT_ID;
-    client_secret = process.env.GOOGLE_CLIENT_SECRET;
-  } else {
-    // Usar arquivo credentials.json
-    const content = await fs.readFile(CREDENTIALS_PATH);
-    const keys = JSON.parse(content);
-    const key = keys.installed || keys.web;
-    client_id = key.client_id;
-    client_secret = key.client_secret;
-  }
+  // Usar arquivo credentials.json
+  const content = await fs.readFile(CREDENTIALS_PATH);
+  const keys = JSON.parse(content);
+  const key = keys.installed || keys.web;
   
   const payload = JSON.stringify({
     type: 'authorized_user',
-    client_id: client_id,
-    client_secret: client_secret,
+    client_id: key.client_id,
+    client_secret: key.client_secret,
     refresh_token: client.credentials.refresh_token,
   });
   await fs.writeFile(TOKEN_PATH, payload);
@@ -105,30 +91,15 @@ async function authorize() {
   
   console.log('Token não encontrado, iniciando autenticação...');
   
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    // Usar variáveis de ambiente
-    const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      'http://localhost'
-    );
-    
-    // Para produção, você precisará configurar o fluxo OAuth2 adequadamente
-    console.log('Usando credenciais de variáveis de ambiente');
-    return oauth2Client;
-  } else if (CREDENTIALS_PATH) {
-    // Usar arquivo credentials.json
-    client = await authenticate({
-      scopes: SCOPES,
-      keyfilePath: CREDENTIALS_PATH,
-    });
-    if (client.credentials) {
-      await saveCredentials(client);
-    }
-    return client;
-  } else {
-    throw new Error('Credenciais do Google não encontradas');
+  // Usar arquivo credentials.json
+  client = await authenticate({
+    scopes: SCOPES,
+    keyfilePath: CREDENTIALS_PATH,
+  });
+  if (client.credentials) {
+    await saveCredentials(client);
   }
+  return client;
 }
 
 

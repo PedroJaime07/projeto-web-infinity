@@ -205,9 +205,9 @@ app.delete('/api/events/:id', async (req, res) => {
 
 
 
-// Iniciar servidor
-const PORT = 3001;
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
   console.log(`Acesse http://localhost:${PORT}/api/events para ver os eventos`);
 });

@@ -182,6 +182,29 @@ infinity-school-calendar/
 - Validação de dados no frontend e backend
 - Sanitização de inputs
 
+## 🚀 Deploy
+
+### Render.com (Recomendado - Gratuito)
+1. Crie uma conta em [Render.com](https://render.com)
+2. Clique em "New +" > "Web Service"
+3. Conecte seu repositório GitHub
+4. Configure:
+   - **Name**: `infinity-school-calendar`
+   - **Runtime**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Instance Type**: `Free`
+5. Adicione variáveis de ambiente:
+   - `PORT=10000`
+   - `NODE_ENV=production`
+6. Clique em "Create Web Service"
+7. Aguarde o deploy (pode demorar alguns minutos)
+
+### Railway.app (Alternativa Gratuita)
+1. Acesse [Railway.app](https://railway.app)
+2. Conecte seu repositório GitHub
+3. Configure as variáveis de ambiente
+4. Deploy automático
 
 ## 🤝 Contribuição
 
@@ -213,4 +236,4 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ---
 
-**Desenvolvido com ❤️ pela Infinity School** 
+**Desenvolvido com ❤️ para Infinity School** 

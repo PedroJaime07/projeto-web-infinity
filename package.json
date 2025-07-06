@@ -1,34 +1,41 @@
 {
-  "name": "infinity-app-web-vscode",
+  "name": "infinity-school-calendar",
   "version": "1.0.0",
-  "description": "",
+  "description": "Sistema de gerenciamento de eventos e calendário integrado ao Google Calendar para a Infinity School",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon calendario.js",
-    "start": "node calendario.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "calendar",
+    "google-calendar",
+    "infinity-school",
+    "events",
+    "nodejs",
+    "express",
+    "javascript"
+  ],
+  "author": "Pedro Jaime <pedrojaime07@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
+    "express": "^4.18.2",
+    "googleapis": "^118.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PedroJaime07/projeto-web-infinity.git"
+    "url": "https://github.com/PedroJaime07/projeto-web-infinity.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/PedroJaime07/projeto-web-infinity/issues"
   },
-  "homepage": "https://github.com/PedroJaime07/projeto-web-infinity#readme",
-  "dependencies": {
-    "@google-cloud/local-auth": "^2.1.0",
-    "dotenv": "^17.0.1",
-    "express": "^5.1.0",
-    "googleapis": "^105.0.0",
-    "open": "^10.1.2",
-    "pg": "^8.16.3"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
-  }
+  "homepage": "https://github.com/PedroJaime07/projeto-web-infinity#readme"
 }

@@ -21,3 +21,40 @@ html, body {
     border: none;
     display: block;
 }
+
+/* Media Queries para Responsividade do Calendário */
+
+/* Tablets (768px e menor) */
+@media screen and (max-width: 768px) {
+    #calendario {
+        height: calc(100vh - 120px);
+    }
+    
+    #calendario iframe {
+        min-height: 400px;
+    }
+}
+
+/* Celulares (480px e menor) */
+@media screen and (max-width: 480px) {
+    #calendario {
+        height: calc(100vh - 60px);
+        margin-bottom: 60px;
+    }
+    
+    #calendario iframe {
+        min-height: 300px;
+    }
+}
+
+/* Celulares pequenos (320px e menor) */
+@media screen and (max-width: 320px) {
+    #calendario {
+        height: calc(100vh - 55px);
+        margin-bottom: 55px;
+    }
+    
+    #calendario iframe {
+        min-height: 250px;
+    }
+}

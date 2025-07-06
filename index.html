@@ -12,7 +12,7 @@
 <body>
     <header>
         <div id="header">
-            <div id="perfil">
+            <div id="perfil"> 
                 <img id="foto-perfil" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTm9hlx79XPy7AWwPxUoKYmE3ZQZ_cIRcDDxA&s" alt="foto-perfil">
                 <div id="nome-user">
                     <h2>Usuário Infinity</h2>
@@ -34,26 +34,126 @@
         <nav>
             <ul id="sidebar">
                 <li>
-                    <a target="_blank" href="https://www.google.com/">
+                    <a target="_blank" href="https://www.google.com/" class="tooltip">
+                        <span class="tooltip-text">GOOGLE DRIVE</span>
                         <i class="fa-brands fa-google-drive"></i> 
                         <span id="descricao">GOOGLE DRIVE</span>
                     </a>
                 </li>
                 <li>
-                    <a target="_blank" href="https://infinityschool.eadplataforma.app/">
+                    <a target="_blank" href="https://infinityschool.eadplataforma.app/" class="tooltip">
+                        <span class="tooltip-text">PORTAL DO ALUNO</span>
                         <img id="sidebar-logo-in" title="PORTAL DO ALUNO" src="https://media.licdn.com/dms/image/v2/D4D0BAQFNR93j4fKXJA/company-logo_200_200/company-logo_200_200/0/1696797819036/infinityschool_logo?e=2147483647&v=beta&t=X855ID8EbNdKw7eqwLFiIYDU4u0ebPDieJK_MX41fxU" alt="logo-infinity">
                         <span id="descricao">PORTAL DO ALUNO</span>
                     </a>
                 </li>
                 <li>
-                    <a target="_blank" href="https://www.infinityschool.app/">
-                        <img id="sidebar-logo-in" title="INFINITY APP" src="https://media.licdn.com/dms/image/v2/D4D0BAQFNR93j4fKXJA/company-logo_200_200/company-logo_200_200/0/1696797819036/infinityschool_logo?e=2147483647&v=beta&t=X855ID8EbNdKw7eqwLFiIYDU4u0ebPDieJK_MX41fxU" alt="logo-infinity">
+                    <a target="_blank" href="https://www.infinityschool.app/" class="tooltip">
+                        <span class="tooltip-text">INFINITY APP</span>
+                        <img id="sidebar-logo-in" src="https://media.licdn.com/dms/image/v2/D4D0BAQFNR93j4fKXJA/company-logo_200_200/company-logo_200_200/0/1696797819036/infinityschool_logo?e=2147483647&v=beta&t=X855ID8EbNdKw7eqwLFiIYDU4u0ebPDieJK_MX41fxU" alt="logo-infinity">
                         <span id="descricao">INFINITY APP</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="btn-criar-evento" class="tooltip">
+                        <span class="tooltip-text">CRIAR EVENTO</span> 
+                        <i class="fa-solid fa-plus"></i> 
+                        <span id="descricao">CRIAR EVENTO</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="btn-excluir-evento" class="tooltip">
+                        <span class="tooltip-text">EXCLUIR EVENTO</span> 
+                        <i class="fa-solid fa-trash"></i> 
+                        <span id="descricao">EXCLUIR EVENTO</span>
                     </a>
                 </li>
                 <i id="btn-sidebar" class="fa-solid fa-chevron-right"></i>
             </ul>
+
         </nav>
+
+        <div id="modal-criar-evento">
+            <form id="form-criar-evento">
+                <button id="btn-fechar-modal">X</button>
+                <label for="titulo">Título do evento</label>
+                <input id="sumary" type="text" name="titulo" placeholder="Título do evento" required>
+
+                <label for="descricao">Descrição do evento</label>
+                <input id="description" type="text" name="descricao" placeholder="Descrição do evento" required>
+                
+                <label for="local">Local</label>
+                <select id="local" name="local" required>
+                    <option value="">Selecione o local</option>
+                    <option value="SALA BERLIN">SALA BERLIN</option>
+                    <option value="SALA LONDRES">SALA LONDRES</option>
+                    <option value="STUDIO">STUDIO</option>
+                    <option value="INFINITY SCHOOL">INFINITY SCHOOL</option>
+                </select>
+                
+                <label for="categoria">Categoria</label>
+                <select id="categoria" name="categoria" required>
+                    <option value="">Selecione a categoria</option>
+                    <option value="AULAS">AULAS</option>
+                    <option value="REUNIAO">REUNIÃO</option>
+                    <option value="EVENTOS">EVENTOS</option>
+                </select>
+                
+                <label for="subcategoria" id="label-subcategoria" style="display: none;">Tipo de Aula</label>
+                <select id="subcategoria" name="subcategoria" style="display: none;">
+                    <option value="">Selecione o tipo</option>
+                    <option value="CURSO">CURSO</option>
+                    <option value="SUPER MODULO">SUPER MÓDULO</option>
+                    <option value="AULA COMPARTILHADA">AULA COMPARTILHADA</option>
+                </select>
+                
+                <label for="hora">Data e hora do Evento</label>
+                <div id="horario">
+                    <div>
+                        <p>Início</p>
+                        <input id="hora-start" type="datetime-local" name="hora" required>
+                    </div>
+                    <div>
+                        <p>Fim</p>
+                        <input id="hora-end" type="datetime-local" name="hora" required>
+                    </div>
+                </div>
+                
+                <button id="btn-enviar-evento">Criar evento</button>
+            </form>
+        </div>
+
+        <div id="modal-excluir-evento">
+            <div id="janela-excluir-evento">
+                <button id="btn-fechar-modal-excluir">X</button>
+                <h3>Excluir Eventos</h3>
+                <p>Clique em "Excluir" ao lado do evento que deseja remover:</p>
+                
+                <div class="legenda-locais">
+                    <h4>Legenda por Local:</h4>
+                    <div class="legenda-item">
+                        <span class="cor-berlin"></span>
+                        <span>SALA BERLIN</span>
+                    </div>
+                    <div class="legenda-item">
+                        <span class="cor-londres"></span>
+                        <span>SALA LONDRES</span>
+                    </div>
+                    <div class="legenda-item">
+                        <span class="cor-studio"></span>
+                        <span>STUDIO</span>
+                    </div>
+                    <div class="legenda-item">
+                        <span class="cor-infinity"></span>
+                        <span>INFINITY SCHOOL</span>
+                    </div>
+                </div>
+                
+                <ul id="lista-eventos">
+                    
+                </ul>
+            </div>
+        </div>
     
         <main >
             <div id="calendario">

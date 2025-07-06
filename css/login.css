@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+* {
+    font-family: 'Lato', sans-serif;
+}
+
 body {
     background-image: url('../icons/fundologin.jpg');
     background-size: cover;
@@ -69,6 +75,8 @@ body {
         font-size: 30px;
         color: #5a0c03;
         text-align: center;
+        font-weight: 700;
+        font-family: 'Lato', sans-serif;
     }
     
     .inputs {
@@ -92,7 +100,8 @@ body {
         color: #5a0c03;
         pointer-events: none;
         transition: none;
-        font-weight: 500;
+        font-weight: 600;
+        font-family: 'Lato', sans-serif;
     }
     
     .inputs input {
@@ -132,7 +141,8 @@ body {
         box-shadow: 0 0 10px #5a0c03;
         font-size: 16px;
         color: #000;
-        font-weight: 500;
+        font-weight: 600;
+        font-family: 'Lato', sans-serif;
         cursor: pointer;
         border-radius: 30px;
         border: none;
@@ -167,10 +177,113 @@ body {
     flex-direction: row;
     color: #d4cac9;
     margin-bottom: 30px;
+    font-weight: 700;
+    font-family: 'Lato', sans-serif;
 }
 
 #logo-box {
     background-color: #d14b3b;
     padding: 2px;
+}
+
+/* Media Queries para Responsividade */
+
+/* Tablets (768px e menor) */
+@media screen and (max-width: 768px) {
+    body {
+        padding: 20px;
+    }
+    
+    .entrada {
+        width: 90%;
+        max-width: 350px;
+        height: auto;
+        min-height: 400px;
+        padding: 25px 20px;
+    }
+    
+    .inputs input {
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    h2 {
+        font-size: 26px;
+    }
+    
+    #logo-infinity {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+}
+
+/* Celulares (480px e menor) */
+@media screen and (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .entrada {
+        width: 95%;
+        max-width: 300px;
+        height: auto;
+        min-height: 350px;
+        padding: 20px 15px;
+    }
+    
+    .inputs input {
+        width: 100%;
+        max-width: 250px;
+        font-size: 16px; /* Evita zoom no iOS */
+    }
+    
+    h2 {
+        font-size: 24px;
+    }
+    
+    .inputs label {
+        font-size: 16px;
+    }
+    
+    button {
+        height: 45px;
+        font-size: 16px;
+    }
+    
+    #logo-infinity {
+        font-size: 18px;
+        margin-bottom: 15px;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .lembrar {
+        margin: -10px 0 10px 5px;
+    }
+    
+    .lembrar label {
+        font-size: 14px;
+    }
+}
+
+/* Celulares pequenos (320px e menor) */
+@media screen and (max-width: 320px) {
+    .entrada {
+        width: 98%;
+        max-width: 280px;
+        padding: 15px 10px;
+    }
+    
+    .inputs input {
+        max-width: 220px;
+    }
+    
+    h2 {
+        font-size: 22px;
+    }
+    
+    #logo-infinity {
+        font-size: 16px;
+    }
 }
 

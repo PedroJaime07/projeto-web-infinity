@@ -9,6 +9,11 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
 
+
+app.get('/', (req, res) => {
+  res.redirect('/login.html');
+});
+
 const usuarios = [
   { email: 'admin@infinity.com', senha: '123456', nome: 'Administrador' },
   { email: 'user@infinity.com', senha: '123456', nome: 'Usuário' }
@@ -29,6 +34,11 @@ app.get('/api/check-auth', (req, res) => {
   res.json({ success: true });
 });
 
+
+app.get('/index.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.post('/api/logout', (req, res) => {
   res.json({ success: true });
 });
@@ -38,7 +48,7 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
 
-// Funções de autenticação (iguais ao exemplo oficial)
+
 async function loadSavedCredentialsIfExist() {
   try {
     const content = await fs.readFile(TOKEN_PATH);

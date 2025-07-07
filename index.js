@@ -165,17 +165,28 @@ app.post('/api/events', async (req, res) => {
       descricaoCompleta += `\nTipo: ${subcategoria}`;
     }
     
+    // Validar e converter as datas
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      console.log('Datas inválidas recebidas:', { start, end });
+      return res.status(400).json({ 
+        error: 'Formato de data inválido. Use o formato YYYY-MM-DDTHH:MM' 
+      });
+    }
+    
     const event = {
       summary: summary,
       description: descricaoCompleta,
       location: local,
       colorId: getColorId(local), 
       start: {
-        dateTime: new Date(start).toISOString(),
+        dateTime: startDate.toISOString(),
         timeZone: 'America/Fortaleza'
       },
       end: {
-        dateTime: new Date(end).toISOString(),
+        dateTime: endDate.toISOString(),
         timeZone: 'America/Fortaleza'
       }
     };
@@ -189,6 +200,7 @@ app.post('/api/events', async (req, res) => {
     res.status(201).json(response.data);
   } catch (err) {
     console.error('Erro ao criar evento:', err);
+    console.error('Dados recebidos:', req.body);
     res.status(500).json({ error: err.message });
   }
 });

@@ -1,13 +1,35 @@
-const fs = require('fs').promises;
-const path = require('path');
-const process = require('process');
-const { authenticate } = require('@google-cloud/local-auth');
-const { google } = require('googleapis');
 const express = require('express');
-const app = express();
+const { google } = require('googleapis');
+const path = require('path');
+const fs = require('fs');
 
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+// Middleware
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static('.'));
+
+// Configuração do Google Calendar
+const SCOPES = ['https://www.googleapis.com/auth/calendar'];
+
+// Função para criar credenciais a partir de variáveis de ambiente
+function getCredentials() {
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    return {
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uris: [process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3001/oauth2callback']
+    };
+  } else {
+    // Fallback para arquivo local (desenvolvimento)
+    const credentialsPath = path.join(__dirname, 'credentials.json');
+    if (fs.existsSync(credentialsPath)) {
+      return JSON.parse(fs.readFileSync(credentialsPath));
+    }
+    throw new Error('Credenciais do Google não encontradas. Configure as variáveis de ambiente GOOGLE_CLIENT_ID e GOOGLE_CLIENT_SECRET.');
+  }
+}
 
 
 app.get('/', (req, res) => {
@@ -44,21 +66,11 @@ app.post('/api/logout', (req, res) => {
 });
 
 
-const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
-
-// Verificar se as credenciais estão em variáveis de ambiente ou arquivo
-function getCredentialsPath() {
-  // Sempre usar arquivo credentials.json por enquanto
-  return path.join(process.cwd(), 'credentials.json');
-}
-
-const CREDENTIALS_PATH = getCredentialsPath();
-
 
 async function loadSavedCredentialsIfExist() {
   try {
-    const content = await fs.readFile(TOKEN_PATH);
+    const content = await fs.promises.readFile(TOKEN_PATH);
     const credentials = JSON.parse(content);
     return google.auth.fromJSON(credentials);
   } catch (err) {
@@ -67,10 +79,9 @@ async function loadSavedCredentialsIfExist() {
 }
 
 async function saveCredentials(client) {
-  // Usar arquivo credentials.json
-  const content = await fs.readFile(CREDENTIALS_PATH);
-  const keys = JSON.parse(content);
-  const key = keys.installed || keys.web;
+  // Usar credenciais de variáveis de ambiente ou arquivo
+  const credentials = getCredentials();
+  const key = credentials.installed || credentials.web;
   
   const payload = JSON.stringify({
     type: 'authorized_user',
@@ -78,7 +89,7 @@ async function saveCredentials(client) {
     client_secret: key.client_secret,
     refresh_token: client.credentials.refresh_token,
   });
-  await fs.writeFile(TOKEN_PATH, payload);
+  await fs.promises.writeFile(TOKEN_PATH, payload);
 }
 
 async function authorize() {
@@ -91,15 +102,15 @@ async function authorize() {
   
   console.log('Token não encontrado, iniciando autenticação...');
   
-  // Usar arquivo credentials.json
-  client = await authenticate({
-    scopes: SCOPES,
-    keyfilePath: CREDENTIALS_PATH,
-  });
-  if (client.credentials) {
-    await saveCredentials(client);
-  }
-  return client;
+  // Usar credenciais de variáveis de ambiente ou arquivo
+  const credentials = getCredentials();
+  const { client_secret, client_id, redirect_uris } = credentials.installed || credentials.web;
+  
+  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+  
+  // Para produção, você precisará implementar o fluxo OAuth2 completo
+  // Por enquanto, vamos usar o arquivo de token se existir
+  throw new Error('Autenticação OAuth2 não configurada para produção. Configure as variáveis de ambiente.');
 }
 
 
@@ -240,7 +251,6 @@ app.delete('/api/events/:id', async (req, res) => {
 
 
 
-const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
   console.log(`Acesse http://localhost:${PORT}/api/events para ver os eventos`);

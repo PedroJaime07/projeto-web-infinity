@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   formulario.addEventListener("submit", async (e) => {
 
-    const titulo = document.querySelector("#sumary").value;
+    const titulo = document.querySelector("#summary").value;
     const descricao = document.querySelector("#description").value;
     const local = document.querySelector("#local").value;
     const categoria = document.querySelector("#categoria").value;

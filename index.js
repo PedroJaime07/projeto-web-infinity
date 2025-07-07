@@ -17,9 +17,11 @@ const SCOPES = ['https://www.googleapis.com/auth/calendar'];
 function getCredentials() {
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     return {
-      client_id: process.env.GOOGLE_CLIENT_ID,
-      client_secret: process.env.GOOGLE_CLIENT_SECRET,
-      redirect_uris: [process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3001/oauth2callback']
+      web: {
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET,
+        redirect_uris: [process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3001/oauth2callback']
+      }
     };
   } else {
     // Fallback para arquivo local (desenvolvimento)
@@ -31,7 +33,60 @@ function getCredentials() {
   }
 }
 
+const TOKEN_PATH = path.join(process.cwd(), 'token.json');
 
+async function loadSavedCredentialsIfExist() {
+  try {
+    if (fs.existsSync(TOKEN_PATH)) {
+      const content = fs.readFileSync(TOKEN_PATH);
+      const credentials = JSON.parse(content);
+      return google.auth.fromJSON(credentials);
+    }
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function saveCredentials(client) {
+  const credentials = getCredentials();
+  const key = credentials.installed || credentials.web;
+  
+  const payload = JSON.stringify({
+    type: 'authorized_user',
+    client_id: key.client_id,
+    client_secret: key.client_secret,
+    refresh_token: client.credentials.refresh_token,
+  });
+  fs.writeFileSync(TOKEN_PATH, payload);
+}
+
+async function authorize() {
+  console.log('Iniciando processo de autorização...');
+  let client = await loadSavedCredentialsIfExist();
+  if (client) {
+    console.log('Token encontrado, usando credenciais salvas');
+    return client;
+  }
+  
+  console.log('Token não encontrado, iniciando autenticação...');
+  
+  // Para produção, vamos usar um token pré-configurado ou implementar OAuth2 completo
+  const credentials = getCredentials();
+  const { client_secret, client_id, redirect_uris } = credentials.installed || credentials.web;
+  
+  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+  
+  // Se estiver em produção e não tiver token, vamos usar um método alternativo
+  if (process.env.NODE_ENV === 'production') {
+    // Para produção, você pode usar um token de serviço ou implementar OAuth2 completo
+    throw new Error('Para produção, configure um token de serviço ou implemente OAuth2 completo');
+  }
+  
+  return oAuth2Client;
+}
+
+// Rotas
 app.get('/', (req, res) => {
   res.redirect('/login.html');
 });
@@ -56,6 +111,13 @@ app.get('/api/check-auth', (req, res) => {
   res.json({ success: true });
 });
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
 
 app.get('/index.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
@@ -64,55 +126,6 @@ app.get('/index.html', (req, res) => {
 app.post('/api/logout', (req, res) => {
   res.json({ success: true });
 });
-
-
-const TOKEN_PATH = path.join(process.cwd(), 'token.json');
-
-async function loadSavedCredentialsIfExist() {
-  try {
-    const content = await fs.promises.readFile(TOKEN_PATH);
-    const credentials = JSON.parse(content);
-    return google.auth.fromJSON(credentials);
-  } catch (err) {
-    return null;
-  }
-}
-
-async function saveCredentials(client) {
-  // Usar credenciais de variáveis de ambiente ou arquivo
-  const credentials = getCredentials();
-  const key = credentials.installed || credentials.web;
-  
-  const payload = JSON.stringify({
-    type: 'authorized_user',
-    client_id: key.client_id,
-    client_secret: key.client_secret,
-    refresh_token: client.credentials.refresh_token,
-  });
-  await fs.promises.writeFile(TOKEN_PATH, payload);
-}
-
-async function authorize() {
-  console.log('Iniciando processo de autorização...');
-  let client = await loadSavedCredentialsIfExist();
-  if (client) {
-    console.log('Token encontrado, usando credenciais salvas');
-    return client;
-  }
-  
-  console.log('Token não encontrado, iniciando autenticação...');
-  
-  // Usar credenciais de variáveis de ambiente ou arquivo
-  const credentials = getCredentials();
-  const { client_secret, client_id, redirect_uris } = credentials.installed || credentials.web;
-  
-  const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-  
-  // Para produção, você precisará implementar o fluxo OAuth2 completo
-  // Por enquanto, vamos usar o arquivo de token se existir
-  throw new Error('Autenticação OAuth2 não configurada para produção. Configure as variáveis de ambiente.');
-}
-
 
 app.get('/api/events', async (req, res) => {
   try {
@@ -127,6 +140,7 @@ app.get('/api/events', async (req, res) => {
     });
     res.json(response.data.items || []);
   } catch (err) {
+    console.error('Erro ao buscar eventos:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -136,7 +150,7 @@ app.post('/api/events', async (req, res) => {
     const { summary, description, local, categoria, subcategoria, start, end } = req.body;
     
     if (!summary || !local || !categoria || !start || !end) {
-      console.log('Dados faltando:', { summary, local, categoria, start, end }); // Debug
+      console.log('Dados faltando:', { summary, local, categoria, start, end });
       return res.status(400).json({ 
         error: 'Dados obrigatórios: summary, local, categoria, start e end são necessários' 
       });
@@ -150,7 +164,6 @@ app.post('/api/events', async (req, res) => {
 
     const auth = await authorize();
     const calendar = google.calendar({ version: 'v3', auth });
-    
     
     function getColorId(local) {
       if (local.includes('BERLIN')) {
@@ -202,12 +215,14 @@ app.post('/api/events', async (req, res) => {
       }
     };
    
+    console.log('Criando evento:', event);
 
     const response = await calendar.events.insert({
       calendarId: 'primary',
       resource: event,
     });
     
+    console.log('Evento criado com sucesso:', response.data);
     res.status(201).json(response.data);
   } catch (err) {
     console.error('Erro ao criar evento:', err);
@@ -221,7 +236,7 @@ app.put('/api/events/:id', async (req, res) => {
     const auth = await authorize();
     const calendar = google.calendar({ version: 'v3', auth });
     const eventId = req.params.id;
-    const event = req.body; // Novos dados do evento
+    const event = req.body;
     const response = await calendar.events.update({
       calendarId: 'primary',
       eventId: eventId,
@@ -247,9 +262,6 @@ app.delete('/api/events/:id', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
-
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
